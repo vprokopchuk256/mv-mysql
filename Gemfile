@@ -15,6 +15,5 @@ group :test do
   gem 'factory_girl'
   gem 'shoulda'
   gem 'autotest'
-  gem 'carlosbrando-autotest-notification'
   gem 'mv-test'
 end
