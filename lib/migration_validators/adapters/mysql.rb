@@ -10,10 +10,8 @@ module MigrationValidators
       define_base_containers
 
       container :insert_trigger do
-        operation :create do |stmt, group_name|
-          table_name, trigger_name = group_name
-
-          "CREATE TRIGGER #{trigger_name} BEFORE INSERT ON #{table_name} FOR EACH ROW
+        operation :create do |stmt, trigger_name, group_name|
+          "CREATE TRIGGER #{trigger_name} BEFORE INSERT ON #{group_name.first} FOR EACH ROW
            BEGIN
             DECLARE var INT;
 
@@ -40,10 +38,8 @@ module MigrationValidators
       end
 
       container :update_trigger do
-        operation :create do |stmt, group_name|
-          table_name, trigger_name = group_name
-
-          "CREATE TRIGGER #{trigger_name} BEFORE UPDATE ON #{table_name} FOR EACH ROW
+        operation :create do |stmt, trigger_name, group_name|
+          "CREATE TRIGGER #{trigger_name} BEFORE UPDATE ON #{group_name.first} FOR EACH ROW
            BEGIN
             DECLARE var INT;
 
