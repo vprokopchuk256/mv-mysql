@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe MigrationValidators::Adapters::Mysql, :type => :mv_test do
   before :all do
     Driver = Class.new(MigrationValidators::Adapters::Base)
-    use_db :adapter => "mysql",
+    use_db :adapter => "mysql2",
            :pool => 5,
            :timeout => 5000,
            :database => "validation_migration_test_db",

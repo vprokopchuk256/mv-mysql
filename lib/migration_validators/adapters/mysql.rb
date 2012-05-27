@@ -98,5 +98,6 @@ module MigrationValidators
     end
 
     MigrationValidators.register_adapter! "mysql", Mysql
+    MigrationValidators.register_adapter! "mysql2", Mysql
   end
 end
