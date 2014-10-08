@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem 'mysql2'
-gem "mv-core", :git => "git@github.com:vprokopchuk256/mv-core.git"
+gem "mv-core", '>= 1.0.0'
 
 
 group :development do
@@ -9,9 +9,8 @@ group :development do
 end
 
 group :test do
-  gem "rspec"
-  gem 'factory_girl'
+  gem 'rspec', '>= 3.1.0'
   gem 'shoulda'
-  gem 'autotest'
-  gem 'mv-test'
+  gem 'mv-test', '>= 1.0.0'
+  gem 'pry-byebug'
 end
