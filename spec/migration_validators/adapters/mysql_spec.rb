@@ -25,7 +25,7 @@ describe MigrationValidators::Adapters::Mysql, :type => :mv_test do
 
       #integer
       for_integer_column  do
-        with_validator :presense do
+        with_validator :presence do
           with_option :as => :trigger do
             it { should allow(5) }
             it { should deny(nil).with_initial(5) }
@@ -181,17 +181,17 @@ describe MigrationValidators::Adapters::Mysql, :type => :mv_test do
         end
       end
 
-      for_integer_column :validates => {:uniqueness => {:as => :index, :message => "Some error message"}, :presense => {:as => :trigger, :message => "Some error message"}} do
+      for_integer_column :validates => {:uniqueness => {:as => :index, :message => "Some error message"}, :presence => {:as => :trigger, :message => "Some error message"}} do
         it { should deny.at_least_one(1,1).with_initial(1, 2).and_message(/Duplicate entry/) }
         it { should deny(nil).with_initial(10).and_message(/Some error message/) }
 
-        with_change :presense => false do
+        with_change :presence => false do
           it { should deny.at_least_one(1,1).with_initial(1, 2).and_message(/Duplicate entry/) }
           it { should allow(nil) }
         end
 
-        with_change :presense => true do
-          with_change :presense => false do
+        with_change :presence => true do
+          with_change :presence => false do
             it { should allow(nil) }
           end
         end
@@ -201,7 +201,7 @@ describe MigrationValidators::Adapters::Mysql, :type => :mv_test do
       #float
       for_decimal_column :precision => 8, :scale => 5 do
 
-        with_validator :presense do
+        with_validator :presence do
           with_option :as => :trigger do
             it { should allow(1.1) }
             it { should deny(nil).with_initial(1.1) }
@@ -313,7 +313,7 @@ describe MigrationValidators::Adapters::Mysql, :type => :mv_test do
           end
         end
 
-        with_validator :presense do
+        with_validator :presence do
           with_option :as => :trigger do
             it { should allow('b') }
             it { should deny(nil).with_initial('b') }
@@ -739,7 +739,7 @@ describe MigrationValidators::Adapters::Mysql, :type => :mv_test do
         startDate = Date.today - 5
         endDate = Date.today
 
-        with_validator :presense do
+        with_validator :presence do
           with_option :as => :trigger do
             it { should allow(startDate) }
             it { should deny(nil).with_initial(startDate) }
@@ -834,7 +834,7 @@ describe MigrationValidators::Adapters::Mysql, :type => :mv_test do
         startTime = Time.now - 10
         endTime = Time.now
 
-        with_validator :presense do
+        with_validator :presence do
           with_option :as => :trigger do
             it { should allow(startTime) }
             it { should deny(nil).with_initial(startTime) }

@@ -15,7 +15,7 @@ Jeweler::Tasks.new do |gem|
   gem.name = "mv-mysql"
   gem.homepage = "http://github.com/vprokopchuk256/mv-mysql"
   gem.license = "MIT"
-  gem.summary = "Migration Validators project mysql driver"
+  gem.summary = "Migration Validators project. MySQL driver"
   gem.description = "Migration Validators project mysql driver"
   gem.email = "vprokopchuk@gmail.com"
   gem.authors = ["Valeriy Prokopchuk"]

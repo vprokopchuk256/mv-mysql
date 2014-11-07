@@ -66,7 +66,7 @@ module MigrationValidators
       end
 
 
-      route :presense, :trigger, :default => true do
+      route :presence, :trigger, :default => true do
         to :insert_trigger, :if => {:on => [:save, :create, nil]}
         to :update_trigger, :if => {:on => [:save, :update, nil]}
       end

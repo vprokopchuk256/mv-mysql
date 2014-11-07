@@ -14,51 +14,57 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   validate_column :table_name, :column_name, uniqueness: true
   ```
 
-  define validator as trigger with specified failure message:
+  define validation as trigger with specified failure message:
 
   ```ruby
   validate_column :table_name, :column_name, 
-                  uniqueness: { message: 'Error message', as: :trigger}
+                  uniqueness: { message: 'Error message', as: :trigger }
   ```
 
-  define validator as unique index: 
+  define validation as unique index: 
 
   ```ruby
-  validate_column :table_name, :column_name, uniqueness: {:as => :index}
+  validate_column :table_name, :column_name, uniqueness: { as: :index }
   ```
 
-  all above are available in the create and change table blocks: 
+  all above are available in a create and change table blocks: 
 
   ```ruby
   create_table :table_name do |t|
-     t.string :column_name, :validates => {uniqueness => true}
+     t.string :column_name, validates: { uniqueness: true }
+  end
+  ```
+
+  ```ruby
+  change :table_name do |t|
+     t.change :column_name, :string, :validates: { uniqueness: false }
   end
   ```
 
   Options: 
 
-  * ```:message``` - text of the error message that will be shown if constraint violated.  Ignored unless ```:as == :trigger```
-  * ```:index_name``` - name of the index that will be created for validator. Ignored unless ```:as == :index```
-  * ```:on``` - validation event. Possible values ```[:save, :update, :create]```. Ignored unless ```:as == :trigger```. Default value ```:save```
-  * ```:create_tigger_name``` - name of the 'before insert' trigger that will be created if ```:as == :trigger && :on in [:save, :create]```
-  * ```:update_tigger_name``` - name of the 'before update' trigger that will be created if ```:as == :trigger && :on in [:save, :update]```
-  * ```:allow_nil``` - ignore validation for nil values. Ignored unless ```:as == :trigger```. Default value: ```false```
-  * ````:allow_blank``` - ignore validation for blank values. Ignored unless ```:as == :trigger```. Default value: ```false```
-  * ```:as``` - defines the way how constraint will be implemented. Possible values: ```[:index, :trigger]```. Default value: ```:index```
+  * `:message` - text of the error message that will be shown if constraint violated.  Ignored unless `:as == :trigger`
+  * `:index_name` - name of the index that will be created for validator. Ignored unless `:as == :index`
+  * `:on` - validation event. Possible values `[:save, :update, :create]`. Ignored unless `:as == :trigger`. Default value `:save`
+  * `:create_tigger_name` - name of the 'before insert' trigger that will be created if `:as == :trigger` && `:on` in `[:save, :create]`
+  * `:update_tigger_name` - name of the 'before update' trigger that will be created if `:as == :trigger` && `:on` in `[:save, :update]`
+  * `:allow_nil` - ignore validation for nil values. Ignored unless `:as == :trigger`. Default value: `false`
+  * `:allow_blank` - ignore validation for blank values. Ignored unless `:as == :trigger`. Default value: `false`
+  * `:as` - defines the way how constraint will be implemented. Possible values: `[:index, :trigger]`. Default value: `:index`
 
 ### length
 
   Examples: 
 
-  column value length should be more than 5 symbols and less than 9. Otherwise 'Wrong lenght message' error will be raised: 
+  column value length should be more than 4 symbols and less than 9. Otherwise 'Wrong length message' error will be raised: 
 
  ```ruby 
   validate_column :table_name, :column_name, 
                                length: { in: 5..8, 
-                                         message: "Wrong length message"}
-  ```
+                                         message: 'Wrong length message' }
+ ```
 
-  allow ```NULL```:
+ allow `NULL`:
 
   ```ruby
   validate_column :table_name, :column_name, 
@@ -70,25 +76,25 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   ```ruby
   validate_column :table_name, :column_name, 
                         length: { maximum: 3, 
-                                  too_long: "Value is longer than 3 symbols"} 
+                                  too_long: 'Value is longer than 3 symbols' } 
   ```
 
   Options:
 
-  * ```:in```- range or array that length of the value should be contained in.
-  * ```:within``` - synonym of ```:in```
-  * ```:is```- exact length of the value
-  * ```:maximum```- maximum allowed length
-  * ```:minimum```- minimum allowed length
-  * ```:message```- message that should be shown if validation failed and specific message is not defined
-  * ```:too_long```- message that will be shown if value longer than allowed. Ignored unless maximum value is defined
-  * ```:too_short```- message that will be shown if value shorter than allowed. Ignored unless minimum value is defined
-  * ```:on```- validation event. Possible values ```[:save, :update, :create]```. Default value: ```:save``` 
-  * ```:create_tigger_name```- Name of the 'before insert' trigger
-  * ```:update_tigger_name```- Name of the 'before update' trigger
-  * ```:allow_nil```- ignore validation for nil values. Default value: ```false```
-  * ```:allow_blank```- ignore validation for blank values. Default value: ```false```
-  * ```:as```- defines the way how constraint will be implemented. Possible values: ```[:trigger]```
+  * `:in`- range or array that length of the value should be contained in.
+  * `:within` - synonym of `:in`
+  * `:is`- exact length of the value
+  * `:maximum`- maximum allowed length
+  * `:minimum`- minimum allowed length
+  * `:message`- message that should be shown if validation failed and specific message is not defined
+  * `:too_long`- message that will be shown if value longer than allowed. Ignored unless maximum value is defined
+  * `:too_short`- message that will be shown if value shorter than allowed. Ignored unless minimum value is defined
+  * `:on`- validation event. Possible values `[:save, :update, :create]`. Default value: `:save` 
+  * `:create_tigger_name`- Name of the 'before insert' trigger
+  * `:update_tigger_name`- Name of the 'before update' trigger
+  * `:allow_nil`- ignore validation for nil values. Default value: `false`
+  * `:allow_blank`- ignore validation for blank values. Default value: `false`
+  * `:as`- defines the way how constraint will be implemented. Possible values: `[:trigger]`
 
 ### inclusion
 
@@ -102,38 +108,22 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
 
   with failure message specified: 
 
-  ```runy
+  ```ruby
   validate_column :table_name, :column_name, 
   inclusion: { in: [1, 2, 3], 
                message: "Column 'column_name' should be equal to 1 or 2 or 3" }
   ```
 
-  validation on update only that implemented as check constraint: 
-
-  ```ruby
-  validate_column :table_name, :column_name, inclusion: { in: [1, 2, 3], 
-                                                          on: :update, 
-                                                          as: :check }
-  ```
-
-  validation on insert / create that implemented as trigger: 
-
-  ```ruby
-  validate_column :table_name, :column_name, inclusion: { in: 1..3, 
-                                                          on: :create, 
-                                                          as: :trigger }
-  ```
-
   Options:
 
-  * ```:in range``` - or array that column value should be contained in.
-  * ```:message message``` - that should be shown if validation failed
-  * ```:on  validation``` - event. Possible values ```[:save, :update, :create]```. Default value: ```:save```
-  * ```:create_tigger_name``` - Name of the 'before insert' trigger 
-  * ```:update_tigger_name``` - Name of the 'before update' trigger
-  * ```:allow_nil``` - ignore validation for nil values. Default value: ```false```
-  * ```:allow_blank``` - ignore validation for blank values. Default value: ```false```
-  * ```:as``` - defines the way how constraint will be implemented. Possible values: ```[:trigger]```
+  * `:in range` - or array that column value should be contained in.
+  * `:message message` - that should be shown if validation failed
+  * `:on  validation` - event. Possible values `[:save, :update, :create]`. Default value: `:save`
+  * `:create_tigger_name` - Name of the 'before insert' trigger 
+  * `:update_tigger_name` - Name of the 'before update' trigger
+  * `:allow_nil` - ignore validation for nil values. Default value: `false`
+  * `:allow_blank` - ignore validation for blank values. Default value: `false`
+  * `:as` - defines the way how constraint will be implemented. Possible values: `[:trigger]`
 
   
 ### exclusion
@@ -156,78 +146,59 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
     }
   ```
 
-  performs verification on update only and implement it as check constraint:
+  performs verification on update only:
 
   ```ruby
   validate_column :table_name, :column_name, 
                                exclusion: { in: [1, 2, 3], 
-                                            on: :update, 
-                                            as: :check }
-  ```
-
-  performs verification on insert and implement it as trigger: 
-
-  ```ruby
-  validate_column :table_name, :column_name, 
-                               exclusion: { in: 1..3, 
-                                            on: :create, 
-                                            as: :trigger }
+                                            on: :update }
   ```
 
   Options:
 
-  * ```:in``` - range or array that column value should NOT be contained in.
+  * `:in` - range or array that column value should NOT be contained in.
   message: message that should be shown if validation failed
-  * ```:on``` - validation event. Possible values ```[:save, :update, :create]```. Default value: :save
-  *```:create_tigger_name``` - name of the 'before insert' trigger
-  *```:update_tigger_name``` - name of the 'before update' trigger
-  *```:allow_nil``` - ignore validation for nil values. Default value: false
-  *```:allow_blank``` - ignore validation for blank values. Default value: false
-  *```:as``` - defines the way how constraint will be implemented. Possible values: ```[:trigger]```
+  * `:on` - validation event. Possible values `[:save, :update, :create]`. Default value: :save
+  *`:create_tigger_name` - name of the 'before insert' trigger
+  *`:update_tigger_name` - name of the 'before update' trigger
+  *`:allow_nil` - ignore validation for nil values. Default value: false
+  *`:allow_blank` - ignore validation for blank values. Default value: false
+  *`:as` - defines the way how constraint will be implemented. Possible values: `[:trigger]`
 
-### presense
+### presence
 
   Examples:
 
-  simple presense validator: 
+  simple presence validator: 
 
   ```ruby
-  validate_column :table_name, :column_name, presense: true
+  validate_column :table_name, :column_name, presence: true
   ```
 
   with failure message: 
 
   ```ruby
   validate_column :table_name, :column_name, 
-                  :presense: { message: "value should not be empty" }
-  ```
-
-  implemented as trigger: 
-
-  ```ruby
-  validate_column :table_name, :column_name, 
-                  presense: { message: "value should not be empty", 
-                              as: :trigger }
+                  :presence: { message: 'value should not be empty' }
   ```
 
   performs verification only when new record is inserted:
 
   ```ruby
   validate_column :table_name, :column_name, 
-                  presense: { message: "value should not be empty", 
-                              as: :trigger, 
+                  presence: { message: 'value should not be empty', 
                               on: :create }
   ```
 
   Options:
 
-  * ```:message``` - message that should be shown if validation failed
-  ```:on```  validation event. Possible values ```[:save, :update, :create]```. Default value: ```:save```
-  * ```:create_tigger_name``` - name of the 'before insert' trigger
-  * ```:update_tigger_name``` - name of the 'before update' trigger
-  * ```:allow_nil``` - ignore validation for nil values. Default value: false
-  * ```:allow_blank``` - ignore validation for blank values. Default value: ```false```
-  * ```:as``` - defines the way how constraint will be implemented. Possible values: ```[:trigger]```
+  * `:message` - message that should be shown if validation failed
+  `:on`  validation event. Possible values `[:save, :update, :create]`. Default value: `:save`
+  * `:create_tigger_name` - name of the 'before insert' trigger
+  * `:update_tigger_name` - name of the 'before update' trigger
+  * `:allow_nil` - ignore validation for nil values. Default value: false
+  * `:allow_blank` - ignore validation for blank values. Default value: `false`
+  * `:as` - defines the way how constraint will be implemented. Possible values: `[:trigger]`
 
 ### format
 
@@ -246,7 +217,7 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   ```ruby
   validate_column :table_name, :column_name, 
             format: { with: /word/, 
-                      messsage: "Column_name value should contain start word" }
+                      messsage: 'Column_name value should contain start word' }
   ```
 
   implemented as trigger: 
@@ -254,19 +225,19 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   ```ruby
   validate_column :table_name, :column_name, 
             format: { with: /word/, 
-                      messsage: "Column_name value should contain start word", as: :trigger }
+                      messsage: 'Column_name value should contain start word', as: :trigger }
   ```
 
   Options:
 
-  * ```:with``` - regular expression that column value should be matched to
-  * ```:message``` - message that should be shown if validation failed
-  * ```:on``` - validation event. Possible values ```[:save, :update, :create]```. Default value: ```:save```
-  * ```:create_tigger_name``` - name of the 'before insert' trigger
-  * ```:update_tigger_name``` - name of the 'before update' trigger
-  * ```:allow_nil``` - ignore validation for nil values. Default value: ```false```
-  * ```:allow_blank``` - ignore validation for blank values. Default value: ```false```
-  * ```:as``` - defines the way how constraint will be implemented. Possible values: ```[:trigger]```
+  * `:with` - regular expression that column value should be matched to
+  * `:message` - message that should be shown if validation failed
+  * `:on` - validation event. Possible values `[:save, :update, :create]`. Default value: `:save`
+  * `:create_tigger_name` - name of the 'before insert' trigger
+  * `:update_tigger_name` - name of the 'before update' trigger
+  * `:allow_nil` - ignore validation for nil values. Default value: `false`
+  * `:allow_blank` - ignore validation for blank values. Default value: `false`
+  * `:as` - defines the way how constraint will be implemented. Possible values: `[:trigger]`
 
 ## Contributing to mv-mysql
  
