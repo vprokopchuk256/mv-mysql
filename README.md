@@ -254,3 +254,7 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
 Copyright (c) 2011 Valeriy Prokopchuk. See LICENSE.txt for
 further details.
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/vprokopchuk256/mv-mysql/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
