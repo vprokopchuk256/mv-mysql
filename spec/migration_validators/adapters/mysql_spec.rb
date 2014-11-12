@@ -5,15 +5,10 @@ Driver = Class.new(MigrationValidators::Adapters::Base)
 describe MigrationValidators::Adapters::Mysql, :type => :mv_test do
   before :all do
     use_db :adapter => "mysql2",
-           :pool => 5,
-           :timeout => 5000,
            :database => "validation_migration_test_db",
-           :host => "localhost",
-           :username => "root",
-           :password => "",
-           :socket => "/tmp/mysql.sock"
+           :username => "root"
 
-    db.initialize_schema_migrations_table
+    db.initialize_migration_validators_table
     ::ActiveRecord::Migration.verbose = false
   end
 

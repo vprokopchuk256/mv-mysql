@@ -11,6 +11,9 @@ require 'pry-byebug'
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
+require 'coveralls'
+Coveralls.wear!
+
 RSpec.configure do |config|
   
 end

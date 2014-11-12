@@ -1,3 +1,8 @@
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/vprokopchuk256/mv-mysql/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Build Status](https://travis-ci.org/vprokopchuk256/mv-mysql.svg?branch=master)](https://travis-ci.org/vprokopchuk256/mv-mysql)
+[![Coverage Status](https://coveralls.io/repos/vprokopchuk256/mv-mysql/badge.png?branch=master)](https://coveralls.io/r/vprokopchuk256/mv-mysql?branch=master)
+[![Gem Version](https://badge.fury.io/rb/mv-mysql.svg)](http://badge.fury.io/rb/mv-mysql)
+
 # Introduction
 
 mv-mysql is the MySQL driver for Migration Validators project (details here: https://github.com/vprokopchuk256/mv-core)
@@ -253,8 +258,3 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
 
 Copyright (c) 2011 Valeriy Prokopchuk. See LICENSE.txt for
 further details.
-
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/vprokopchuk256/mv-mysql/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
