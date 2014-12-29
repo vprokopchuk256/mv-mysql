@@ -3,7 +3,6 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rspec'
 require 'mv-test'
 require 'mv-mysql'
-require 'shoulda'
 require 'pry-byebug'
 
 # Requires supporting files with custom matchers and macros, etc,
