@@ -33,7 +33,7 @@ describe 'Update validation scenarios' do
     end
 
     it "deletes trigger constraint" do
-      expect_any_instance_of(Mv::Core::Constraint::Builder::Trigger).to receive(:delete).once
+      expect_any_instance_of(Mv::Mysql::Constraint::Builder::Trigger).to receive(:delete).once
       subject
     end
 
@@ -68,7 +68,7 @@ describe 'Update validation scenarios' do
     end
 
     it "deletes trigger constraint" do
-      expect_any_instance_of(Mv::Core::Constraint::Builder::Trigger).to receive(:delete).once
+      expect_any_instance_of(Mv::Mysql::Constraint::Builder::Trigger).to receive(:delete).once
       subject
     end
 
