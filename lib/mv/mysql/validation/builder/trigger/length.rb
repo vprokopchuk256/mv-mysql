@@ -1,14 +1,12 @@
+require 'mv/mysql/validation/builder/trigger/trigger_column'
+
 module Mv
   module Mysql
     module Validation
       module Builder
         module Trigger
           class Length < Mv::Core::Validation::Builder::Length
-            protected
-            
-            def column_reference
-              "NEW.#{super}"
-            end 
+            include TriggerColumn
           end
         end
       end
