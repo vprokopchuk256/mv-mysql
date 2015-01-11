@@ -79,205 +79,144 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
     end
   end
 
-  # describe "SQL methods" do
-  #   def triggers name
-  #     ActiveRecord::Base.connection.select_values("select tgname from pg_trigger where tgname = '#{name}'")
-  #   end
+  describe "SQL methods" do
+    let(:test_validation_builder_klass) do
+      Class.new(Mv::Mysql::Validation::Builder::Trigger::Presence) do
+        def conditions
+          [{ statement: '1 = 1', message: 'some error message' }]
+        end
+      end
+    end
 
-  #   def procs name
-  #     ActiveRecord::Base.connection.select_values("select proname from pg_proc where proname = '#{name}'")
-  #   end
+    def triggers name
+      ActiveRecord::Base.connection.select_values("
+        SELECT trigger_name 
+          FROM information_schema.triggers 
+         WHERE trigger_schema='#{ActiveRecord::Base.connection.current_database}'
+           AND trigger_name = '#{name}'
+      ")
+    end
 
-  #   before do
-  #     Mv::Postgresql::Constraint::Builder::Trigger.validation_builders_factory.register_builder(
-  #       Mv::Postgresql::Validation::Presence, 
-  #       test_validation_builder_klass
-  #     )
-  #   end
+    before do
+      Mv::Mysql::Constraint::Builder::Trigger.validation_builders_factory.register_builder(
+        Mv::Core::Validation::Presence, 
+        test_validation_builder_klass
+      )
+    end
 
-  #   after do
-  #     Mv::Postgresql::Constraint::Builder::Trigger.validation_builders_factory.register_builder(
-  #       Mv::Postgresql::Validation::Presence, 
-  #       Mv::Postgresql::Validation::Builder::Trigger::Presence
-  #     )
-  #   end
+    after do
+      Mv::Mysql::Constraint::Builder::Trigger.validation_builders_factory.register_builder(
+        Mv::Core::Validation::Presence, 
+        Mv::Mysql::Validation::Builder::Trigger::Presence
+      )
+    end
 
-  #   let(:validation) {
-  #     Mv::Postgresql::Validation::Presence.new(:table_name, 
-  #                                              :column_name, 
-  #                                              as: :trigger, 
-  #                                              update_trigger_name: :trg_mv_table_name_upd, 
-  #                                              create_trigger_name: :trg_mv_table_name_ins) 
-  #   }
+    let(:validation) {
+      Mv::Core::Validation::Presence.new(:table_name, 
+                                        :column_name, 
+                                         as: :trigger, 
+                                         update_trigger_name: :trg_mv_table_name_upd, 
+                                         create_trigger_name: :trg_mv_table_name_ins) 
+    }
 
-  #   let(:test_validation_builder_klass) do
-  #     Class.new(Mv::Postgresql::Validation::Builder::Trigger::Presence) do
-  #       def conditions
-  #         [{ statement: '1 = 1', message: 'some error message' }]
-  #       end
-  #     end
-  #   end
 
-  #   let(:create_trigger_description) { Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, event: :create) }
-  #   let(:update_trigger_description) { Mv::Core::Constraint::Description.new(:trg_mv_table_name_upd, :trigger, event: :update) }
+    let(:create_trigger_description) { Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, event: :create) }
+    let(:update_trigger_description) { Mv::Core::Constraint::Description.new(:trg_mv_table_name_upd, :trigger, event: :update) }
 
-  #   let(:create_trigger) { Mv::Core::Constraint::Trigger.new(create_trigger_description)}
-  #   let(:update_trigger) { Mv::Core::Constraint::Trigger.new(update_trigger_description)}
+    let(:create_trigger) { Mv::Core::Constraint::Trigger.new(create_trigger_description)}
+    let(:update_trigger) { Mv::Core::Constraint::Trigger.new(update_trigger_description)}
 
-  #   before do
-  #     create_trigger.validations << validation
-  #     update_trigger.validations << validation
-  #     ActiveRecord::Base.connection.execute('DROP TRIGGER IF EXISTS trg_mv_table_name_ins ON table_name;')
-  #     ActiveRecord::Base.connection.execute('DROP FUNCTION IF EXISTS trg_mv_table_name_ins_func();')
-  #   end
+    before do
+      create_trigger.validations << validation
+      update_trigger.validations << validation
+      ActiveRecord::Base.connection.execute('DROP TRIGGER IF EXISTS trg_mv_table_name_ins')
+    end
 
-  #   let(:create_trigger_builder) { Mv::Postgresql::Constraint::Builder::Trigger.new(create_trigger)}
-  #   let(:update_trigger_builder) { Mv::Postgresql::Constraint::Builder::Trigger.new(update_trigger)}
+    let(:create_trigger_builder) { Mv::Mysql::Constraint::Builder::Trigger.new(create_trigger)}
+    let(:update_trigger_builder) { Mv::Mysql::Constraint::Builder::Trigger.new(update_trigger)}
 
-  #   describe "#create" do
-  #     subject { create_trigger_builder.create }
+    describe "#create" do
+      subject { create_trigger_builder.create }
 
-  #     describe "when both trigger and trigger function do not exist" do
-  #       it "creates new trigger" do
-  #         expect { subject }.to change{ triggers('trg_mv_table_name_ins').length }.from(0).to(1)
-  #       end
+      describe "when trigger does not  exist" do
+        it "creates new trigger" do
+          expect { subject }.to change{ triggers('trg_mv_table_name_ins').length }.from(0).to(1)
+        end
+      end
 
-  #       it "create new trigger function" do
-  #         expect { subject }.to change{ procs('trg_mv_table_name_ins_func').length }.from(0).to(1)
-  #       end
-  #     end
+      describe "when trigger already exist" do
+        it "does not raise an error" do
+          expect { subject }.not_to raise_error
+        end
+      end
 
-  #     describe "when function exists but trigger does not" do
-  #       before do 
-  #         ActiveRecord::Base.connection.execute(
-  #            "CREATE FUNCTION trg_mv_table_name_ins_func() RETURNS TRIGGER AS $trg_mv_table_name_ins_func$
-  #               BEGIN
-  #                 IF NOT(1 = 1) THEN
-  #                   RAISE EXCEPTION 'some error exception';
-  #                 END IF;
-                
-  #                 RETURN NEW;
-  #               END;
-  #             $trg_mv_table_name_ins_func$ LANGUAGE plpgsql;"
-  #         )
-  #       end
+      describe "when several validations provided" do
+        before do
+          create_trigger.validations << validation
+        end
 
-  #       it "creates new trigger" do
-  #         expect { subject }.to change{ triggers('trg_mv_table_name_ins').length }.from(0).to(1)
-  #       end
-  #     end
+        it "does not raise an error" do
+          expect{ subject }.not_to raise_error
+        end
+      end
+    end
 
-  #     describe "when several validations provided" do
-  #       before do
-  #         create_trigger.validations << validation
-  #       end
+    describe "#update" do
+      subject { create_trigger_builder.update(create_trigger_builder) }
 
-  #       it "does not raise an error" do
-  #         expect{ subject }.not_to raise_error
-  #       end
-  #     end
-  #   end
+      describe "when trigger exists" do
+        before do 
+          ActiveRecord::Base.connection.execute(
+            "CREATE TRIGGER trg_mv_table_name_ins BEFORE INSERT ON table_name FOR EACH ROW
+            BEGIN
+              DECLARE var INT;
 
-  #   describe "#update" do
-  #     subject { create_trigger_builder.update(create_trigger_builder) }
+              IF NOT(1 = 1) THEN
+                SET var = (SELECT MAX(1) FROM `some error message`); 
+              END IF;
+            END;"
+          )
+        end
 
-  #     describe "when both trigger and trigger function exist" do
-  #       before do 
-  #         ActiveRecord::Base.connection.execute(
-  #            "CREATE FUNCTION trg_mv_table_name_ins_func() RETURNS TRIGGER AS $trg_mv_table_name_ins_func$
-  #               BEGIN
-  #                 IF NOT(1 = 1) THEN
-  #                   RAISE EXCEPTION 'some error exception';
-  #                 END IF;
-                
-  #                 RETURN NEW;
-  #               END;
-  #             $trg_mv_table_name_ins_func$ LANGUAGE plpgsql;"
-  #         )
-  #         ActiveRecord::Base.connection.execute(
-  #          "CREATE TRIGGER trg_mv_table_name_ins 
-  #             BEFORE INSERT ON table_name
-  #             FOR EACH ROW EXECUTE PROCEDURE trg_mv_table_name_ins_func();"
-  #         )
-  #       end
+        it "does not raise an error" do
+          expect { subject }.not_to raise_error
+        end
+      end
 
-  #       it "does not raise an error" do
-  #         expect { subject }.not_to raise_error
-  #       end
-  #     end
+      describe "when trigger does not exist" do
+        it "creates trigger" do
+          expect { subject }.to change{ triggers('trg_mv_table_name_ins').length }.from(0).to(1)
+        end
+      end
+    end
 
-  #     describe "when function exists but trigger does not" do
-  #       before do 
-  #         ActiveRecord::Base.connection.execute(
-  #            "CREATE FUNCTION trg_mv_table_name_ins_func() RETURNS TRIGGER AS $trg_mv_table_name_ins_func$
-  #               BEGIN
-  #                 IF NOT(1 = 1) THEN
-  #                   RAISE EXCEPTION 'some error exception';
-  #                 END IF;
-                
-  #                 RETURN NEW;
-  #               END;
-  #             $trg_mv_table_name_ins_func$ LANGUAGE plpgsql;"
-  #         )
-  #       end
+    describe "#delete" do
+      subject { create_trigger_builder.delete }
 
-  #       it "creates new trigger" do
-  #         expect { subject }.to change{ triggers('trg_mv_table_name_ins').length }.from(0).to(1)
-  #       end
-  #     end
-  #   end
+      describe "when trigger exists" do
+        before do 
+          ActiveRecord::Base.connection.execute(
+            "CREATE TRIGGER trg_mv_table_name_ins BEFORE INSERT ON table_name FOR EACH ROW
+            BEGIN
+              DECLARE var INT;
 
-  #   describe "#delete" do
-  #     subject { create_trigger_builder.delete }
+              IF NOT(1 = 1) THEN
+                SET var = (SELECT MAX(1) FROM `some error message`); 
+              END IF;
+            END;"
+          )
+        end
 
-  #     describe "when both trigger and trigger function exist" do
-  #       before do 
-  #         ActiveRecord::Base.connection.execute(
-  #            "CREATE FUNCTION trg_mv_table_name_ins_func() RETURNS TRIGGER AS $trg_mv_table_name_ins_func$
-  #               BEGIN
-  #                 IF NOT(1 = 1) THEN
-  #                   RAISE EXCEPTION 'some error exception';
-  #                 END IF;
-                
-  #                 RETURN NEW;
-  #               END;
-  #             $trg_mv_table_name_ins_func$ LANGUAGE plpgsql;"
-  #         )
-  #         ActiveRecord::Base.connection.execute(
-  #          "CREATE TRIGGER trg_mv_table_name_ins 
-  #             BEFORE INSERT ON table_name
-  #             FOR EACH ROW EXECUTE PROCEDURE trg_mv_table_name_ins_func();"
-  #         )
-  #       end
+        it "deletes trigger" do
+          expect { subject }.to change{ triggers('trg_mv_table_name_ins').length }.from(1).to(0)
+        end
+      end
 
-  #       it "deletes trigger" do
-  #         expect { subject }.to change{ triggers('trg_mv_table_name_ins').length }.from(1).to(0)
-  #       end
-
-  #       it "deletes trigger function" do
-  #         expect { subject }.to change{ procs('trg_mv_table_name_ins_func').length }.from(1).to(0)
-  #       end
-  #     end
-
-  #     describe "when function exists but trigger does not" do
-  #       before do 
-  #         ActiveRecord::Base.connection.execute(
-  #            "CREATE FUNCTION trg_mv_table_name_ins_func() RETURNS TRIGGER AS $trg_mv_table_name_ins_func$
-  #               BEGIN
-  #                 IF NOT(1 = 1) THEN
-  #                   RAISE EXCEPTION 'some error exception';
-  #                 END IF;
-                
-  #                 RETURN NEW;
-  #               END;
-  #             $trg_mv_table_name_ins_func$ LANGUAGE plpgsql;"
-  #         )
-  #       end
-
-  #       it "deletes trigger function" do
-  #         expect { subject }.to change{ procs('trg_mv_table_name_ins_func').length }.from(1).to(0)
-  #       end
-  #     end
-  #   end
-  # end
+      describe "when trigger does not exist" do
+        it "does not raise an error" do
+          expect { subject }.not_to raise_error
+        end
+      end
+    end
+  end
 end
