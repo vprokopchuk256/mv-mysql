@@ -7,6 +7,7 @@ require 'mv/mysql/validation/builder/trigger/exclusion'
 require 'mv/mysql/validation/builder/trigger/inclusion'
 require 'mv/mysql/validation/builder/trigger/length'
 require 'mv/mysql/validation/builder/trigger/presence'
+require 'mv/mysql/validation/builder/trigger/absence'
 require 'mv/mysql/validation/builder/trigger/uniqueness'
 
 ActiveSupport.on_load(:mv_core) do
@@ -22,6 +23,7 @@ ActiveSupport.on_load(:mv_core) do
     Mv::Core::Validation::Inclusion => Mv::Mysql::Validation::Builder::Trigger::Inclusion,
     Mv::Core::Validation::Length    => Mv::Mysql::Validation::Builder::Trigger::Length,
     Mv::Core::Validation::Presence  => Mv::Mysql::Validation::Builder::Trigger::Presence,
+    Mv::Core::Validation::Absence  => Mv::Mysql::Validation::Builder::Trigger::Absence,
     Mv::Core::Validation::Uniqueness      => Mv::Mysql::Validation::Builder::Trigger::Uniqueness
   )
 end

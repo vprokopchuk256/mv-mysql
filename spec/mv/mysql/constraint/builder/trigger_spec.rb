@@ -67,6 +67,17 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
       its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Presence) }
     end
 
+    describe "when absence validation provided" do
+      let(:validation) {
+        Mv::Core::Validation::Absence.new(:table_name, 
+                                         :column_name, 
+                                         as: :trigger, 
+                                         update_trigger_name: :trg_mv_table_name) 
+      }
+
+      its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Absence) }
+    end
+
     describe "when uniqueness validation provided" do
       let(:validation) {
         Mv::Core::Validation::Uniqueness.new(:table_name, 
