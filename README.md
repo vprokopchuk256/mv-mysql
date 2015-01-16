@@ -7,8 +7,6 @@
 
 mv-mysql is the MySQL driver for Migration Validators project (details here: https://github.com/vprokopchuk256/mv-core)
 
-**WARNING:** `change` method is not supported in migrations yet. You should rather use `up` && `down` methods# Validators
-
 ### uniqueness
 
   Examples:
@@ -16,20 +14,20 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   validate uniqueness of the column 'column_name':
 
   ```ruby
-  validate_column :table_name, :column_name, uniqueness: true
+  validates :table_name, :column_name, uniqueness: true
   ```
 
   define validation as trigger with specified failure message:
 
   ```ruby
-  validate_column :table_name, :column_name, 
-                  uniqueness: { message: 'Error message', as: :trigger }
+  validates :table_name, :column_name, 
+            uniqueness: { message: 'Error message', as: :trigger }
   ```
 
   define validation as unique index: 
 
   ```ruby
-  validate_column :table_name, :column_name, uniqueness: { as: :index }
+  validates :table_name, :column_name, uniqueness: { as: :index }
   ```
 
   all above are available in a create and change table blocks: 
@@ -64,22 +62,22 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   column value length should be more than 4 symbols and less than 9. Otherwise 'Wrong length message' error will be raised: 
 
  ```ruby 
-  validate_column :table_name, :column_name, 
-                               length: { in: 5..8, 
-                                         message: 'Wrong length message' }
+  validates :table_name, :column_name, 
+                         length: { in: 5..8, 
+                                   message: 'Wrong length message' }
  ```
 
  allow `NULL`:
 
   ```ruby
-  validate_column :table_name, :column_name, 
-                               length: { is: 3, allow_nil: true}
+  validates :table_name, :column_name, 
+                         length: { is: 3, allow_nil: true}
   ```
 
   allow blank values: 
 
   ```ruby
-  validate_column :table_name, :column_name, 
+  validates :table_name, :column_name, 
                         length: { maximum: 3, 
                                   too_long: 'Value is longer than 3 symbols' } 
   ```
@@ -108,13 +106,13 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   valid values array: 
 
   ```ruby
-  validate_column :table_name, :column_name, inclusion: { in: [1, 2, 3]}
+  validates :table_name, :column_name, inclusion: { in: [1, 2, 3]}
   ```
 
   with failure message specified: 
 
   ```ruby
-  validate_column :table_name, :column_name, 
+  validates :table_name, :column_name, 
   inclusion: { in: [1, 2, 3], 
                message: "Column 'column_name' should be equal to 1 or 2 or 3" }
   ```
@@ -138,13 +136,13 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   exclude 1, 2, and 3: 
 
   ```ruby
-  validate_column :table_name, :column_name, exclusion: { in: [1, 2, 3] }
+  validates :table_name, :column_name, exclusion: { in: [1, 2, 3] }
   ```
 
   exclude values with specified failure message:
 
   ```ruby
-  validate_column :table_name, :column_name, 
+  validates :table_name, :column_name, 
     exclusion: { 
         in: [1, 2, 3], 
         message: "Column 'column_name' should not  be equal to 1 or 2 or 3"
@@ -154,7 +152,7 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   performs verification on update only:
 
   ```ruby
-  validate_column :table_name, :column_name, 
+  validates :table_name, :column_name, 
                                exclusion: { in: [1, 2, 3], 
                                             on: :update }
   ```
@@ -177,22 +175,47 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   simple presence validator: 
 
   ```ruby
-  validate_column :table_name, :column_name, presence: true
+  validates :table_name, :column_name, presence: true
   ```
 
   with failure message: 
 
   ```ruby
-  validate_column :table_name, :column_name, 
+  validates :table_name, :column_name, 
                   :presence: { message: 'value should not be empty' }
   ```
 
   performs verification only when new record is inserted:
 
   ```ruby
-  validate_column :table_name, :column_name, 
+  validates :table_name, :column_name, 
                   presence: { message: 'value should not be empty', 
                               on: :create }
+  ```
+
+### absence
+
+  Examples:
+
+  simple absence validator: 
+
+  ```ruby
+  validates :table_name, :column_name, absence: true
+  ```
+
+  with failure message: 
+
+  ```ruby
+  validates :table_name, :column_name, 
+                         :absence: { message: 'value should not empty' }
+  ```
+
+  performs verification only when new record is inserted:
+
+  ```ruby
+  validates :table_name, :column_name, 
+                         absence: { message: 'value should not empty', 
+                                    on: :create }
   ```
 
   Options:
@@ -204,34 +227,6 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   * `:allow_nil` - ignore validation for nil values. Default value: false
   * `:allow_blank` - ignore validation for blank values. Default value: `false`
   * `:as` - defines the way how constraint will be implemented. Possible values: `[:trigger]`
-
-### format
-
-  Allows to define regular expression that column value will be mathed  with
-
-  Example:
-
-  simple custom format validator: 
-
-  ```ruby
-  validate_column :table_name, :column_name, format: { with: /word/ }
-  ```
-
-  with custom failure message: 
-
-  ```ruby
-  validate_column :table_name, :column_name, 
-            format: { with: /word/, 
-                      messsage: 'Column_name value should contain start word' }
-  ```
-
-  implemented as trigger: 
-
-  ```ruby
-  validate_column :table_name, :column_name, 
-            format: { with: /word/, 
-                      messsage: 'Column_name value should contain start word', as: :trigger }
-  ```
 
   Options:
 
