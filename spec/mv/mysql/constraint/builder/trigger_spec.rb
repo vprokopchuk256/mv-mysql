@@ -6,6 +6,11 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
   before do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
     Mv::Core::Db::MigrationValidator.delete_all
+
+    ::ActiveRecord::Base.connection.drop_table(:table_name) if ::ActiveRecord::Base.connection.table_exists?(:table_name)
+    ::ActiveRecord::Base.connection.create_table(:table_name) do |t|
+      t.integer :column_name
+    end
   end
 
   describe "#validation_builders" do
