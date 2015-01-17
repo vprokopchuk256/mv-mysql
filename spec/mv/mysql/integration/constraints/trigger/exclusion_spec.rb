@@ -123,13 +123,13 @@ describe "exclusion validation in trigger constraint begaviour" do
       end
     end
     describe "datetime" do
-      describe "array" do
-        let(:opts) { { datetime_array: DateTime.new(2011, 1, 1, 1, 1, 1) } }
+      # describe "array" do
+      #   let(:opts) { { datetime_array: DateTime.new(2011, 1, 1, 1, 1, 1) } }
         
-        it "raises an error with valid message" do
-          expect{ subject }.to raise_error.with_message(/datetime_array_error/)
-        end
-      end
+      #   it "raises an error with valid message" do
+      #     expect{ subject }.to raise_error.with_message(/datetime_array_error/)
+      #   end
+      # end
 
       describe "range" do
         let(:opts) { { datetime_range: DateTime.new(2011, 1, 1, 1, 1, 2) } }
