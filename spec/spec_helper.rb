@@ -4,7 +4,6 @@ require 'rspec'
 require 'mv-test'
 require 'rspec/its'
 require 'mv-mysql'
-require 'pry-byebug'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
