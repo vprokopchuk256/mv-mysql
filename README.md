@@ -7,6 +7,8 @@
 
 mv-mysql is the MySQL driver for Migration Validators project (details here: https://github.com/vprokopchuk256/mv-core)
 
+# Validators
+
 ### uniqueness
 
   Examples:
@@ -225,17 +227,6 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   * `:create_tigger_name` - name of the 'before insert' trigger
   * `:update_tigger_name` - name of the 'before update' trigger
   * `:allow_nil` - ignore validation for nil values. Default value: false
-  * `:allow_blank` - ignore validation for blank values. Default value: `false`
-  * `:as` - defines the way how constraint will be implemented. Possible values: `[:trigger]`
-
-  Options:
-
-  * `:with` - regular expression that column value should be matched to
-  * `:message` - message that should be shown if validation failed
-  * `:on` - validation event. Possible values `[:save, :update, :create]`. Default value: `:save`
-  * `:create_tigger_name` - name of the 'before insert' trigger
-  * `:update_tigger_name` - name of the 'before update' trigger
-  * `:allow_nil` - ignore validation for nil values. Default value: `false`
   * `:allow_blank` - ignore validation for blank values. Default value: `false`
   * `:as` - defines the way how constraint will be implemented. Possible values: `[:trigger]`
 
