@@ -27,7 +27,7 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when exlusion validation provided" do
       let(:validation) {
-        Mv::Core::Validation::Exclusion.new(:table_name, 
+        Mv::Mysql::Validation::Exclusion.new(:table_name, 
                                                  :column_name, 
                                                  in: [1, 3],
                                                  as: :trigger, 
@@ -39,7 +39,7 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when inclusion validation provided" do
       let(:validation) {
-        Mv::Core::Validation::Inclusion.new(:table_name, 
+        Mv::Mysql::Validation::Inclusion.new(:table_name, 
                                                  :column_name, 
                                                  in: [1, 3],
                                                  as: :trigger, 
@@ -51,7 +51,7 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when length validation provided" do
       let(:validation) {
-        Mv::Core::Validation::Length.new(:table_name, 
+        Mv::Mysql::Validation::Length.new(:table_name, 
                                                  :column_name, 
                                                  in: [1, 3],
                                                  as: :trigger, 
@@ -63,7 +63,7 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when presence validation provided" do
       let(:validation) {
-        Mv::Core::Validation::Presence.new(:table_name, 
+        Mv::Mysql::Validation::Presence.new(:table_name, 
                                                  :column_name, 
                                                  as: :trigger, 
                                                  update_trigger_name: :trg_mv_table_name) 
@@ -74,7 +74,7 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when absence validation provided" do
       let(:validation) {
-        Mv::Core::Validation::Absence.new(:table_name, 
+        Mv::Mysql::Validation::Absence.new(:table_name, 
                                          :column_name, 
                                          as: :trigger, 
                                          update_trigger_name: :trg_mv_table_name) 
@@ -83,9 +83,20 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
       its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Absence) }
     end
 
+    describe "when custom validation provided" do
+      let(:validation) {
+        Mv::Mysql::Validation::Custom.new(:table_name, 
+                                         :column_name, 
+                                         as: :trigger, 
+                                         update_trigger_name: :trg_mv_table_name) 
+      }
+
+      its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Custom) }
+    end
+
     describe "when uniqueness validation provided" do
       let(:validation) {
-        Mv::Core::Validation::Uniqueness.new(:table_name, 
+        Mv::Mysql::Validation::Uniqueness.new(:table_name, 
                                              :column_name, 
                                              as: :trigger, 
                                              update_trigger_name: :trg_mv_table_name) 
