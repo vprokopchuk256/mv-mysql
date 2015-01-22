@@ -15,41 +15,71 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   validate uniqueness of the column 'column_name':
 
   ```ruby
-  validates :table_name, :column_name, uniqueness: true
+  def up
+    validates :table_name, :column_name, uniqueness: true
+  end
+
+  def down
+    validates :table_name, :column_name, uniqueness: false
+  end
   ```
 
   define validation as trigger with specified failure message:
 
   ```ruby
-  validates :table_name, :column_name, 
-            uniqueness: { message: 'Error message', as: :trigger }
+  def up
+    validates :table_name, :column_name, 
+              uniqueness: { message: 'Error message', as: :trigger }
+  end
+
+  def down
+    validates :table_name, :column_name, uniqueness: false
+  end
   ```
 
   define validation as unique index: 
 
   ```ruby
-  validates :table_name, :column_name, uniqueness: { as: :index }
+  def up
+    validates :table_name, :column_name, uniqueness: { as: :index }
+  end
+
+  def down
+    validates :table_name, :column_name, uniqueness: false
+  end
   ```
 
   all above are available in a create and change table blocks: 
 
   ```ruby
-  create_table :table_name do |t|
-     t.string :column_name, validates: { uniqueness: true }
+  def change
+    create_table :table_name do |t|
+       t.string :column_name, validates: { uniqueness: true }
+    end
   end
   ```
 
   ```ruby
-  change :table_name do |t|
-     t.change :column_name, :string, :validates: { uniqueness: false }
+  def up
+    change :table_name do |t|
+       t.change :column_name, :string, :validates: { uniqueness: true }
+    end
+  end
+
+  def down
+    change :table_name do |t|
+       t.change :column_name, :string, :validates: { uniqueness: false }
+    end
   end
   ```
 
   simplifications (version >= 2.1 is required):
 
   ```ruby
-  create_table :table_name do |t|
-     t.string :column_name, uniqueness: true
+  def change
+    create_table :table_name do |t|
+       t.string :column_name, uniqueness: true
+    end
   end
   ```
 
@@ -71,49 +101,79 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   column value length should be more than 4 symbols and less than 9. Otherwise 'Wrong length message' error will be raised: 
 
  ```ruby 
-  validates :table_name, :column_name, 
-                         length: { in: 5..8, 
-                                   message: 'Wrong length message' }
+  def up
+    validates :table_name, :column_name, 
+                           length: { in: 5..8, 
+                                     message: 'Wrong length message' }
+  end
+
+  def down
+    validates :table_name, :column_name, length: false
+  end
  ```
 
  allow `NULL`:
 
   ```ruby
-  validates :table_name, :column_name, 
-                         length: { is: 3, allow_nil: true}
+  def up
+    validates :table_name, :column_name, 
+                           length: { is: 3, allow_nil: true}
+  end
+
+  def down
+    validates :table_name, :column_name, length: false
+  end
   ```
 
   allow blank values: 
 
   ```ruby
-  validates :table_name, :column_name, 
-                        length: { maximum: 3, 
-                                  too_long: 'Value is longer than 3 symbols' } 
+  def up
+    validates :table_name, :column_name, 
+                         length: { maximum: 3, 
+                                   too_long: 'Value is longer than 3 symbols' } 
+  end
+
+  def down
+    validates :table_name, :column_name, length: false
+  end
   ```
   
   all above are available in a create and change table blocks: 
 
   ```ruby
-  create_table :table_name do |t|
-     t.string :column_name, validates: { length: { is: 3, allow_nil: true} }
+  def change
+    create_table :table_name do |t|
+       t.string :column_name, validates: { length: { is: 3, allow_nil: true} }
+    end
   end
   ```
 
   ```ruby
-  change :table_name do |t|
-     t.change :column_name, :string, validates: { length: { is: 3 } }
+  def up
+    change :table_name do |t|
+       t.change :column_name, :string, validates: { length: { is: 3 } }
+    end
+  end
+
+  def down
+    change :table_name do |t|
+       t.change :column_name, :string, validates: { length: false }
+    end
   end
   ```
 
   simplifications (version >= 2.1 is required):
 
   ```ruby
-  create_table :table_name do |t|
-    t.string :string_3, length: 3
-    t.string :string_from_1_to_3, length: 1..3,
-    t.string :string_1_or_3, length: [1, 3]
-    t.string :string_4, validates: { length: 4 }
-    t.string :string_4_in_trigger: length: { is: 4, as: :trigger }
+  def change
+    create_table :table_name do |t|
+      t.string :string_3, length: 3
+      t.string :string_from_1_to_3, length: 1..3,
+      t.string :string_1_or_3, length: [1, 3]
+      t.string :string_4, validates: { length: 4 }
+      t.string :string_4_in_trigger: length: { is: 4, as: :trigger }
+    end
   end
   ```
 
@@ -138,44 +198,66 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
 
   Examples:
 
-  Examples: 
-
   valid values array: 
 
   ```ruby
-  validates :table_name, :column_name, inclusion: { in: [1, 2, 3] }
+  def up
+    validates :table_name, :column_name, inclusion: { in: [1, 2, 3] }
+  end
+
+  def up
+    validates :table_name, :column_name, inclusion: false
+  end
   ```
 
   with failure message specified: 
 
   ```ruby
+  def up
   validates :table_name, :column_name, 
-  inclusion: { in: [1, 2, 3], 
-               message: "Column 'column_name' should be equal to 1 or 2 or 3" }
+    inclusion: { in: [1, 2, 3], 
+                 message: "Column value should be equal to 1 or 2 or 3" }
+  end
+
+  def down
+    validates :table_name, :column_name, inclusion: false
+  end
   ```
 
   all above are available in a create and change table blocks: 
 
   ```ruby
-  create_table :table_name do |t|
-     t.integer :column_name, validates: { inclusion: { in: 1..3 } }
+  def change
+    create_table :table_name do |t|
+       t.integer :column_name, validates: { inclusion: { in: 1..3 } }
+    end
   end
   ```
 
   ```ruby
-  change :table_name do |t|
-     t.change :column_name, :integer, validates: { inclusion: { in: 1..3 } }
+  def up
+    change :table_name do |t|
+       t.change :column_name, :integer, validates: { inclusion: { in: 1..3 } }
+    end
+  end
+
+  def down
+    change :table_name do |t|
+       t.change :column_name, :integer, validates: { inclusion: false }
+    end
   end
   ```
 
   simplifications (version >= 2.1 is required):
 
   ```ruby
-  create_table :table_name do |t|
-    t.string :str_or_str_1, inclusion: ['str', 'str1']
-    t.string :from_str_to_str_1, inclusion: 'str'..'str1'
-    t.string :str_or_str_1_in_trigger, inclusion: { in: ['str', 'str1'], 
-                                                    as: :trigger}
+  def change
+    create_table :table_name do |t|
+      t.string :str_or_str_1, inclusion: ['str', 'str1']
+      t.string :from_str_to_str_1, inclusion: 'str'..'str1'
+      t.string :str_or_str_1_in_trigger, inclusion: { in: ['str', 'str1'], 
+                                                      as: :trigger}
+    end
   end
   ```
 
@@ -198,40 +280,64 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   exclude 1, 2, and 3: 
 
   ```ruby
-  validates :table_name, :column_name, exclusion: { in: [1, 2, 3] }
+  def up
+    validates :table_name, :column_name, exclusion: { in: [1, 2, 3] }
+  end
+
+  def down
+    validates :table_name, :column_name, exclusion: false
+  end
   ```
 
   the same with failure message: 
 
   ```ruby
-  validates :table_name, :column_name, 
-    exclusion: {
-      in: [1, 2, 3], 
-      message: "Column 'column_name' should not  be equal to 1 or 2 or 3" }
+  def up
+    validates :table_name, :column_name, 
+      exclusion: {
+        in: [1, 2, 3], 
+        message: "Column value should not  be equal to 1 or 2 or 3" }
+  end
+
+  def down
+    validates :table_name, :column_name, exclusion: false
+  end
   ```
 
   all above are available in a create and change table blocks: 
 
   ```ruby
-  create_table :table_name do |t|
-     t.integer :column_name, validates: { exclusion: { in: 1..3 } }
+  def change
+    create_table :table_name do |t|
+       t.integer :column_name, validates: { exclusion: { in: 1..3 } }
+    end
   end
   ```
 
   ```ruby
-  change :table_name do |t|
-     t.change :column_name, :integer, validates: { exclusion: { in: 1..3 } }
+  def up
+    change :table_name do |t|
+       t.change :column_name, :integer, validates: { exclusion: { in: 1..3 } }
+    end
+  end
+
+  def down
+    change :table_name do |t|
+       t.change :column_name, :integer, validates: { exclusion: false }
+    end
   end
   ```
 
   simplifications (version >= 2.1 is required):
 
   ```ruby
-  create_table :table_name do |t|
-    t.string :neither_str_nor_str_1, exclusion: ['str', 'str1']
-    t.string :from_str_to_str_1, exclusion: 'str'..'str1'
-    t.string :str_or_str_1_in_trigger, exclusion: { in: ['str', 'str1'], 
-                                                    as: :trigger}
+  def change
+    create_table :table_name do |t|
+      t.string :neither_str_nor_str_1, exclusion: ['str', 'str1']
+      t.string :from_str_to_str_1, exclusion: 'str'..'str1'
+      t.string :str_or_str_1_in_trigger, exclusion: { in: ['str', 'str1'], 
+                                                      as: :trigger}
+    end
   end
   ```
 
@@ -251,45 +357,75 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   Examples: 
 
   ```ruby
-  validates :table_name, :column_name, presence: true
+  def up
+    validates :table_name, :column_name, presence: true
+  end
+
+  def down
+    validates :table_name, :column_name, presence: false
+  end
   ```
 
   with failure message: 
 
   ```ruby
-  validates :table_name, :column_name, 
-                  presence: { message: 'value should not be empty' }
+  def up
+    validates :table_name, :column_name, 
+                    presence: { message: 'value should not be empty' }
+  end
+
+  def down
+    validates :table_name, :column_name, presence: false
+  end
   ```
 
   check when record is inserted only: 
 
   ```ruby
-  validates :table_name, :column_name, 
-                  presence: { message: 'value should not be empty', 
-                              as: :trigger, 
-                              on: :create }
+  def up
+    validates :table_name, :column_name, 
+                    presence: { message: 'value should not be empty', 
+                                as: :trigger, 
+                                on: :create }
+  end
+
+  def down
+    validates :table_name, :column_name, presence: false
+  end
   ```
 
   all above are available in a create and change table blocks: 
 
   ```ruby
-  create_table :table_name do |t|
-     t.string :column_name, validates: { presence: true }
+  def change
+    create_table :table_name do |t|
+       t.string :column_name, validates: { presence: true }
+    end
   end
   ```
 
   ```ruby
-  change :table_name do |t|
-     t.change :column_name, :string, validates: { presence: true }
+  def up
+    change :table_name do |t|
+       t.change :column_name, :string, validates: { presence: true }
+    end
+  end
+
+  def down
+    change :table_name do |t|
+       t.change :column_name, :string, validates: false
+    end
   end
   ```
 
   simplifications (version >= 2.1 is required):
 
   ```ruby
-  create_table :table_name do |t|
-    t.string :presence_in_check, presence: true
-    t.string :presence_in_trigger, presence: { as: :trigger, on: :create }
+  def change
+    create_table :table_name do |t|
+      t.string :presence_in_check, presence: true
+      t.string :presence_in_trigger, presence: { as: :trigger, on: :create }
+    end
   end
   ```
 
@@ -298,45 +434,75 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   Examples: 
 
   ```ruby
-  validates :table_name, :column_name, absence: true
+  def up
+    validates :table_name, :column_name, absence: true
+  end
+
+  def down
+    validates :table_name, :column_name, absence: false
+  end
   ```
 
   with failure message: 
 
   ```ruby
-  validates :table_name, :column_name, 
-                  absence: { message: 'value should be empty' }
+  def up
+    validates :table_name, :column_name, 
+                    absence: { message: 'value should be empty' }
+  end
+
+  def down
+    validates :table_name, :column_name, absence: false
+  end
   ```
 
   check when record is inserted only: 
 
   ```ruby
-  validates :table_name, :column_name, 
-                  absence: { message: 'value should be empty', 
-                              as: :trigger, 
-                              on: :create }
+  def up
+    validates :table_name, :column_name, 
+                    absence: { message: 'value should be empty', 
+                                as: :trigger, 
+                                on: :create }
+  end
+
+  def down
+    validates :table_name, :column_name, absence: false
+  end
   ```
 
   all above are available in a create and change table blocks: 
 
   ```ruby
-  create_table :table_name do |t|
-     t.string :column_name, validates: { absence: true }
+  def change
+    create_table :table_name do |t|
+       t.string :column_name, validates: { absence: true }
+    end
   end
   ```
 
   ```ruby
-  change :table_name do |t|
-     t.change :column_name, :string, validates: { absence: true }
+  def up
+    change :table_name do |t|
+       t.change :column_name, :string, validates: { absence: true }
+    end
+  end
+
+  def down
+    change :table_name do |t|
+       t.change :column_name, :string, validates: { absence: false }
+    end
   end
   ```
 
   simplifications (version >= 2.1 is required):
 
   ```ruby
-  create_table :table_name do |t|
-    t.string :absence_in_check, absence: true
-    t.string :absence_in_trigger, absence: { as: :trigger, on: :create }
+  def change
+    create_table :table_name do |t|
+      t.string :absence_in_check, absence: true
+      t.string :absence_in_trigger, absence: { as: :trigger, on: :create }
+    end
   end
   ```
 
@@ -347,53 +513,83 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   allows only values that equals 'word' when trimmed: 
 
   ```ruby
-  validates :table_name, :column_name, 
-                         custom: { statement: "TRIM({column_name}) = 'word'" }
+  def up
+    validates :table_name, :column_name, 
+                          custom: { statement: "TRIM({column_name}) = 'word'" }
+  end
+
+  def down
+    validates :table_name, :column_name, custom: false
+  end
   ```
 
   with failure message: 
 
   ```ruby
-  validates :table_name, :column_name, 
-    custom: { statement: "TRIM({column_name}) = 'word'", 
-              message: 'Column_name value should contain start word' }
+  def up
+    validates :table_name, :column_name, 
+      custom: { statement: "TRIM({column_name}) = 'word'", 
+                message: 'Column_name value should contain start word' }
+  end
+
+  def down
+    validates :table_name, :column_name, custom: false
+  end
   ```
 
   implemented as trigger on insert event:
 
   ```ruby
-  validates :table_name, :column_name, 
-    custom: { statement: "TRIM({column_name}) = 'word'", 
-              message: 'Column_name value should contain start word', 
-              as: :trigger, 
-              on: :create }
+  def up
+    validates :table_name, :column_name, 
+      custom: { statement: "TRIM({column_name}) = 'word'", 
+                message: 'Column_name value should contain start word', 
+                as: :trigger, 
+                on: :create }
+  end
+
+  def down
+    validates :table_name, :column_name, custom: false
+  end
   ```
 
   all above are available in a create and change table blocks: 
 
   ```ruby
-  create_table :table_name do |t|
-    t.string :column_name, 
+  def change
+    create_table :table_name do |t|
+      t.string :column_name, 
             validates: { custom: { statement: "TRIM({column_name}) = 'word'"} }
+    end
   end
   ```
 
   ```ruby
-  change :table_name do |t|
-    t.change :column_name, :string, 
+  def up
+    change :table_name do |t|
+      t.change :column_name, :string, 
             validates: { custom: { statement: "TRIM({column_name}) = 'word'"} }
+    end
+  end
+
+  def down
+    change :table_name do |t|
+      t.change :column_name, :string, validates: { custom: false }
+    end
   end
   ```
 
   simplifications (version >= 2.1 is required):
 
   ```ruby
-  create_table :table_name do |t|
-    t.string :contains_word, custom: "TRIM({contains_word}) = 'word'"
-    t.string :contains_word_synonym, 
-             validates: "TRIM({contains_word_synonym}) = 'word'"
-    t.string :contains_word_in_trigger, 
-             custom: { statement: "TRIM({contains_word_in_trigger}) = 'word'",          as: :trigger }
+  def change
+    create_table :table_name do |t|
+      t.string :contains_word, custom: "TRIM({contains_word}) = 'word'"
+      t.string :contains_word_synonym, 
+               validates: "TRIM({contains_word_synonym}) = 'word'"
+      t.string :contains_word_in_trigger, 
+               custom: { statement: "TRIM({contains_word_in_trigger}) = 'word'",          as: :trigger }
+    end
   end
   ```
   
@@ -406,74 +602,6 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   * `:allow_nil` - ignore validation for nil values. Default value: false
   * `:allow_blank` - ignore validation for blank values. Default value: `false`
   * `:as` - defines the way how constraint will be implemented. Possible values: `[:trigger]`
-
-### custom (version >= 2.1 is required)
-
-  Examples: 
-
-  allows only values that equals 'word' when trimmed: 
-
-  ```ruby
-  validates :table_name, :column_name, 
-                         custom: { statement: "TRIM({column_name}) = 'word'" }
-  ```
-
-  with failure message: 
-
-  ```ruby
-  validates :table_name, :column_name, 
-    custom: { statement: "TRIM({column_name}) = 'word'", 
-              message: 'Column_name value should contain start word' }
-  ```
-
-  implemented as trigger on insert event:
-
-  ```ruby
-  validates :table_name, :column_name, 
-    custom: { statement: "TRIM({column_name}) = 'word'", 
-              message: 'Column_name value should contain start word', 
-              as: :trigger, 
-              on: :create }
-  ```
-
-  all above are available in a create and change table blocks: 
-
-  ```ruby
-  create_table :table_name do |t|
-    t.string :column_name, 
-            validates: { custom: { statement: "TRIM({column_name}) = 'word'"} }
-  end
-  ```
-
-  ```ruby
-  change :table_name do |t|
-    t.change :column_name, :string, 
-            validates: { custom: { statement: "TRIM({column_name}) = 'word'"} }
-  end
-  ```
-
-  simplifications (version >= 2.1 is required):
-
-  ```ruby
-  create_table :table_name do |t|
-    t.string :contains_word, custom: "TRIM({contains_word}) = 'word'"
-    t.string :contains_word_synonym, 
-             validates: "TRIM({contains_word_synonym}) = 'word'"
-    t.string :contains_word_in_trigger, 
-             custom: { statement: "TRIM({contains_word_in_trigger}) = 'word'",          as: :trigger }
-  end
-  ```
-
-  Options:
-
-  * `statement` - db expression that column value should be matched to
-  * `message` - message that should be shown if validation failed
-  * `on` -  validation event. Possible values `[:save, :update, :create]`. Ignored unless `:as == :trigger`. Default value: `:save`
-  * `create_tigger_name` - Name of the 'before insert' trigger that will be created if `:as == :trigger` && `:on` in `[:save, :create]`
-  * `update_tigger_name` - Name of the 'before update' trigger that will be created if `:as == :trigger` && `:on` in `[:save, :update]`
-  * `allow_nil` - ignore validation for `nil` values. Default value: `false`
-  * `allow_blank` - ignore validation for blank values. Default value: `false`
-  * `as` - defines the way how constraint will be implemented. Possible values: `[:trigger]` Default value: `:trigger`
   
 ## Contributing to mv-mysql
  
