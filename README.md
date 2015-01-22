@@ -340,6 +340,63 @@ mv-mysql is the MySQL driver for Migration Validators project (details here: htt
   end
   ```
 
+### custom (version >= 2.1 is required)
+
+  Examples: 
+
+  allows only values that equals 'word' when trimmed: 
+
+  ```ruby
+  validates :table_name, :column_name, 
+                         custom: { statement: "TRIM({column_name}) = 'word'" }
+  ```
+
+  with failure message: 
+
+  ```ruby
+  validates :table_name, :column_name, 
+    custom: { statement: "TRIM({column_name}) = 'word'", 
+              message: 'Column_name value should contain start word' }
+  ```
+
+  implemented as trigger on insert event:
+
+  ```ruby
+  validates :table_name, :column_name, 
+    custom: { statement: "TRIM({column_name}) = 'word'", 
+              message: 'Column_name value should contain start word', 
+              as: :trigger, 
+              on: :create }
+  ```
+
+  all above are available in a create and change table blocks: 
+
+  ```ruby
+  create_table :table_name do |t|
+    t.string :column_name, 
+            validates: { custom: { statement: "TRIM({column_name}) = 'word'"} }
+  end
+  ```
+
+  ```ruby
+  change :table_name do |t|
+    t.change :column_name, :string, 
+            validates: { custom: { statement: "TRIM({column_name}) = 'word'"} }
+  end
+  ```
+
+  simplifications (version >= 2.1 is required):
+
+  ```ruby
+  create_table :table_name do |t|
+    t.string :contains_word, custom: "TRIM({contains_word}) = 'word'"
+    t.string :contains_word_synonym, 
+             validates: "TRIM({contains_word_synonym}) = 'word'"
+    t.string :contains_word_in_trigger, 
+             custom: { statement: "TRIM({contains_word_in_trigger}) = 'word'",          as: :trigger }
+  end
+  ```
+  
   Options:
 
   * `:message` - message that should be shown if validation failed
