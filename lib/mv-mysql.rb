@@ -47,5 +47,15 @@ ActiveSupport.on_load(:mv_core) do
     Mv::Mysql::Validation::Uniqueness  => Mv::Mysql::Validation::Builder::Trigger::Uniqueness,
     Mv::Mysql::Validation::Custom      => Mv::Mysql::Validation::Builder::Trigger::Custom
   )
+
+  #validation active model presenters
+  Mv::Core::Validation::ActiveModelPresenter::Factory.register_presenters(
+    Mv::Mysql::Validation::Exclusion   => Mv::Core::Validation::ActiveModelPresenter::Exclusion,
+    Mv::Mysql::Validation::Inclusion   => Mv::Core::Validation::ActiveModelPresenter::Inclusion,
+    Mv::Mysql::Validation::Length      => Mv::Core::Validation::ActiveModelPresenter::Length,
+    Mv::Mysql::Validation::Presence    => Mv::Core::Validation::ActiveModelPresenter::Presence,
+    Mv::Mysql::Validation::Absence     => Mv::Core::Validation::ActiveModelPresenter::Absence,
+    Mv::Mysql::Validation::Uniqueness  => Mv::Core::Validation::ActiveModelPresenter::Uniqueness
+  )
 end
 
