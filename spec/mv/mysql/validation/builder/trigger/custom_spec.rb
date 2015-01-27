@@ -6,7 +6,7 @@ describe Mv::Mysql::Validation::Builder::Trigger::Custom do
   def custom(opts = {})
     Mv::Core::Validation::Custom.new(:table_name, 
                                        :column_name,
-                                        { message: 'some error message' }.merge(opts))
+                                        { message: 'must be valid' }.merge(opts))
   end
 
   describe "#conditions" do
@@ -17,7 +17,7 @@ describe Mv::Mysql::Validation::Builder::Trigger::Custom do
        
       it { is_expected.to eq([{
         statement: "NEW.column_name IS NOT NULL AND (NEW.column_name > 1)", 
-        message: 'some error message'
+        message: 'ColumnName must be valid'
       }]) }
     end 
   end

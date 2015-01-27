@@ -6,7 +6,7 @@ describe Mv::Mysql::Validation::Builder::Trigger::Inclusion do
   def inclusion(opts = {})
     Mv::Core::Validation::Inclusion.new(:table_name, 
                                         :column_name,
-                                        { in: [1, 5], message: 'some error message' }.merge(opts)) 
+                                        { in: [1, 5], message: 'is included' }.merge(opts)) 
   end
 
   describe "#conditions" do
@@ -17,7 +17,7 @@ describe Mv::Mysql::Validation::Builder::Trigger::Inclusion do
 
       it { is_expected.to eq([{
         statement: "NEW.column_name IS NOT NULL AND NEW.column_name IN (DATE('2001-01-01'), DATE('2002-02-02'))", 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
 
@@ -26,7 +26,7 @@ describe Mv::Mysql::Validation::Builder::Trigger::Inclusion do
 
       it { is_expected.to eq([{
         statement: "NEW.column_name IS NOT NULL AND NEW.column_name IN (TIMESTAMP('2001-01-01 01:01:01'), TIMESTAMP('2002-02-02 02:02:02'))", 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
 
@@ -35,7 +35,7 @@ describe Mv::Mysql::Validation::Builder::Trigger::Inclusion do
 
       it { is_expected.to eq([{
         statement: "NEW.column_name IS NOT NULL AND NEW.column_name IN (TIME('2001-01-01 01:01:01'), TIME('2002-02-02 02:02:02'))", 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
   end
