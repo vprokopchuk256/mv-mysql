@@ -9,6 +9,7 @@ require 'mv/mysql/validation/length'
 require 'mv/mysql/validation/presence'
 require 'mv/mysql/validation/absence'
 require 'mv/mysql/validation/uniqueness'
+require 'mv/mysql/validation/format'
 require 'mv/mysql/validation/custom'
 
 require 'mv/mysql/validation/builder/trigger/exclusion'
@@ -17,7 +18,10 @@ require 'mv/mysql/validation/builder/trigger/length'
 require 'mv/mysql/validation/builder/trigger/presence'
 require 'mv/mysql/validation/builder/trigger/absence'
 require 'mv/mysql/validation/builder/trigger/uniqueness'
+require 'mv/mysql/validation/builder/trigger/format'
 require 'mv/mysql/validation/builder/trigger/custom'
+
+require 'mv/mysql/validation/active_model_presenter/format'
 
 ActiveSupport.on_load(:mv_core) do
 
@@ -33,7 +37,8 @@ ActiveSupport.on_load(:mv_core) do
     :length      => Mv::Mysql::Validation::Length,
     :presence    => Mv::Mysql::Validation::Presence,
     :absence     => Mv::Mysql::Validation::Absence,
-    :uniqueness  => Mv::Mysql::Validation::Uniqueness, 
+    :uniqueness  => Mv::Mysql::Validation::Uniqueness,
+    :format      => Mv::Mysql::Validation::Format,
     :custom      => Mv::Mysql::Validation::Custom
   )
 
@@ -45,6 +50,7 @@ ActiveSupport.on_load(:mv_core) do
     Mv::Mysql::Validation::Presence    => Mv::Mysql::Validation::Builder::Trigger::Presence,
     Mv::Mysql::Validation::Absence     => Mv::Mysql::Validation::Builder::Trigger::Absence,
     Mv::Mysql::Validation::Uniqueness  => Mv::Mysql::Validation::Builder::Trigger::Uniqueness,
+    Mv::Mysql::Validation::Format      => Mv::Mysql::Validation::Builder::Trigger::Format,
     Mv::Mysql::Validation::Custom      => Mv::Mysql::Validation::Builder::Trigger::Custom
   )
 
@@ -55,7 +61,8 @@ ActiveSupport.on_load(:mv_core) do
     Mv::Mysql::Validation::Length      => Mv::Core::Validation::ActiveModelPresenter::Length,
     Mv::Mysql::Validation::Presence    => Mv::Core::Validation::ActiveModelPresenter::Presence,
     Mv::Mysql::Validation::Absence     => Mv::Core::Validation::ActiveModelPresenter::Absence,
-    Mv::Mysql::Validation::Uniqueness  => Mv::Core::Validation::ActiveModelPresenter::Uniqueness
+    Mv::Mysql::Validation::Uniqueness  => Mv::Core::Validation::ActiveModelPresenter::Uniqueness,
+    Mv::Mysql::Validation::Format      => Mv::Mysql::Validation::ActiveModelPresenter::Format
   )
 end
 
