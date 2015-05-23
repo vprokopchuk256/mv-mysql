@@ -745,6 +745,10 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
 * Integration with ActiveRecord
 
+**(2.2.1)** (23 May, 2015)
+
+* Format validation
+
 ## Contributing
 
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
