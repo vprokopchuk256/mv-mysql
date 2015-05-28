@@ -749,6 +749,10 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
 * Format validation
 
+**(2.2.2)** (29 May, 2015)
+
+* Made it possible to use several mv-* drivers in the same project
+
 ## Contributing
 
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
