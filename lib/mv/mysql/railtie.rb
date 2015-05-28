@@ -1,10 +1,11 @@
-require 'mv/mysql/active_record/connection_adapters/mysql_adapter_decorator'
-
 module Mv
   module Mysql
     class Railtie < ::Rails::Railtie
       initializer 'mv-mysql.initialization', after: 'active_record.initialize_database' do
-        ::ActiveRecord::ConnectionAdapters::Mysql2Adapter.send(:prepend, Mv::Mysql::ActiveRecord::ConnectionAdapters::MysqlAdapterDecorator)
+        if defined?(::ActiveRecord::ConnectionAdapters::Mysql2Adapter) &&
+           ::ActiveRecord::Base.connection.is_a?(::ActiveRecord::ConnectionAdapters::Mysql2Adapter)
+          require 'mv/mysql/loader'
+        end
       end
     end
   end
