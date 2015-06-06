@@ -2,7 +2,8 @@ source "http://rubygems.org"
 
 gem 'railties', '~> 4.1'
 gem 'mysql2', '~> 0.3'
-gem "mv-core", '~> 2.2'
+# gem "mv-core", '~> 2.2'
+gem 'mv-core', git: 'https://github.com/vprokopchuk256/mv-core.git', branch: 'predefined_formats'
 
 
 group :development do

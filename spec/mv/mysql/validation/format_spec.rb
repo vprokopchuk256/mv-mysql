@@ -82,7 +82,7 @@ describe Mv::Mysql::Validation::Format do
     describe ":message" do
       subject { instance(message: nil) }
 
-      its(:message) { is_expected.to eq('Format violated on the table table_name column column_name') }
+      its(:message) { is_expected.to eq('Format violated on the table table_name column colum') }
     end
 
     describe ":on" do

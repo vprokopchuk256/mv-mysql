@@ -18,8 +18,6 @@ require 'mv/mysql/validation/builder/trigger/uniqueness'
 require 'mv/mysql/validation/builder/trigger/format'
 require 'mv/mysql/validation/builder/trigger/custom'
 
-require 'mv/mysql/validation/active_model_presenter/format'
-
 require 'mv/mysql/active_record/connection_adapters/mysql_adapter_decorator'
 
 #constraint builders
@@ -59,7 +57,7 @@ Mv::Core::Validation::ActiveModelPresenter::Factory.register_presenters(
   Mv::Mysql::Validation::Presence    => Mv::Core::Validation::ActiveModelPresenter::Presence,
   Mv::Mysql::Validation::Absence     => Mv::Core::Validation::ActiveModelPresenter::Absence,
   Mv::Mysql::Validation::Uniqueness  => Mv::Core::Validation::ActiveModelPresenter::Uniqueness,
-  Mv::Mysql::Validation::Format      => Mv::Mysql::Validation::ActiveModelPresenter::Format
+  Mv::Mysql::Validation::Format      => Mv::Core::Validation::ActiveModelPresenter::Format
 )
 
 ::ActiveRecord::ConnectionAdapters::Mysql2Adapter.send(:prepend, Mv::Mysql::ActiveRecord::ConnectionAdapters::MysqlAdapterDecorator)
