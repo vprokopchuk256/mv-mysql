@@ -2,9 +2,9 @@
 [![Coverage Status](https://coveralls.io/repos/vprokopchuk256/mv-mysql/badge.png?branch=master)](https://coveralls.io/r/vprokopchuk256/mv-mysql?branch=master)
 [![Gem Version](https://badge.fury.io/rb/mv-mysql.svg)](http://badge.fury.io/rb/mv-mysql)
 
-# `Migration Validators` project. MySQL driver. 
+# `Migration Validators` project. MySQL driver.
 
-Define validations directly in DB as MySQL constraints and integrate them into your model transparently. See [mv-core](https://github.com/vprokopchuk256/mv-core) for details. There you will be able to review high level project information. Below you can see details of the migration validations that are supported by MySQL driver.  
+Define validations directly in DB as MySQL constraints and integrate them into your model transparently. See [mv-core](https://github.com/vprokopchuk256/mv-core) for details. There you will be able to review high level project information. Below you can see details of the migration validations that are supported by MySQL driver.
 
 #Table Of Contents
 * [Validations](#validations)
@@ -41,7 +41,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
+    validates :table_name, :column_name,
               uniqueness: { message: 'Error message', as: :trigger }
   end
 
@@ -50,7 +50,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  define validation as unique index: 
+  define validation as unique index:
 
   ```ruby
   def up
@@ -62,7 +62,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  all above are available in a create and change table blocks: 
+  all above are available in a create and change table blocks:
 
   ```ruby
   def change
@@ -96,7 +96,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  Options: 
+  Options:
 
   * `:message` - text of the error message that will be shown if constraint violated.  Ignored unless `:as == :trigger`
   * `:index_name` - name of the index that will be created for validator. Ignored unless `:as == :index`
@@ -109,14 +109,14 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
 ### length
 
-  Examples: 
+  Examples:
 
-  column value length should be more than 4 symbols and less than 9. Otherwise 'Wrong length message' error will be raised: 
+  column value length should be more than 4 symbols and less than 9. Otherwise 'Wrong length message' error will be raised:
 
- ```ruby 
+ ```ruby
   def up
-    validates :table_name, :column_name, 
-                           length: { in: 5..8, 
+    validates :table_name, :column_name,
+                           length: { in: 5..8,
                                      message: 'Wrong length message' }
   end
 
@@ -129,7 +129,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
+    validates :table_name, :column_name,
                            length: { is: 3, allow_nil: true}
   end
 
@@ -138,21 +138,21 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  allow blank values: 
+  allow blank values:
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
-                         length: { maximum: 3, 
-                                   too_long: 'Value is longer than 3 symbols' } 
+    validates :table_name, :column_name,
+                         length: { maximum: 3,
+                                   too_long: 'Value is longer than 3 symbols' }
   end
 
   def down
     validates :table_name, :column_name, length: false
   end
   ```
-  
-  all above are available in a create and change table blocks: 
+
+  all above are available in a create and change table blocks:
 
   ```ruby
   def change
@@ -200,7 +200,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   * `:message`- message that should be shown if validation failed and specific message is not defined
   * `:too_long`- message that will be shown if value longer than allowed. Ignored unless maximum value is defined
   * `:too_short`- message that will be shown if value shorter than allowed. Ignored unless minimum value is defined
-  * `:on`- validation event. Possible values `[:save, :update, :create]`. Default value: `:save` 
+  * `:on`- validation event. Possible values `[:save, :update, :create]`. Default value: `:save`
   * `:create_tigger_name`- Name of the 'before insert' trigger
   * `:update_tigger_name`- Name of the 'before update' trigger
   * `:allow_nil`- ignore validation for nil values. Default value: `false`
@@ -211,7 +211,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
   Examples:
 
-  valid values array: 
+  valid values array:
 
   ```ruby
   def up
@@ -223,12 +223,12 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  with failure message specified: 
+  with failure message specified:
 
   ```ruby
   def up
-  validates :table_name, :column_name, 
-    inclusion: { in: [1, 2, 3], 
+  validates :table_name, :column_name,
+    inclusion: { in: [1, 2, 3],
                  message: "Column value should be equal to 1 or 2 or 3" }
   end
 
@@ -237,7 +237,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  all above are available in a create and change table blocks: 
+  all above are available in a create and change table blocks:
 
   ```ruby
   def change
@@ -268,7 +268,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
     create_table :table_name do |t|
       t.string :str_or_str_1, inclusion: ['str', 'str1']
       t.string :from_str_to_str_1, inclusion: 'str'..'str1'
-      t.string :str_or_str_1_in_trigger, inclusion: { in: ['str', 'str1'], 
+      t.string :str_or_str_1_in_trigger, inclusion: { in: ['str', 'str1'],
                                                       as: :trigger}
     end
   end
@@ -279,18 +279,18 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   * `:in range` - or array that column value should be contained in.
   * `:message message` - that should be shown if validation failed
   * `:on  validation` - event. Possible values `[:save, :update, :create]`. Default value: `:save`
-  * `:create_tigger_name` - Name of the 'before insert' trigger 
+  * `:create_tigger_name` - Name of the 'before insert' trigger
   * `:update_tigger_name` - Name of the 'before update' trigger
   * `:allow_nil` - ignore validation for nil values. Default value: `false`
   * `:allow_blank` - ignore validation for blank values. Default value: `false`
   * `:as` - defines the way how constraint will be implemented. Possible values: `[:trigger]`
 
-  
+
 ### exclusion
 
   Examples:
 
-  exclude 1, 2, and 3: 
+  exclude 1, 2, and 3:
 
   ```ruby
   def up
@@ -302,13 +302,13 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  the same with failure message: 
+  the same with failure message:
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
+    validates :table_name, :column_name,
       exclusion: {
-        in: [1, 2, 3], 
+        in: [1, 2, 3],
         message: "Column value should not  be equal to 1 or 2 or 3" }
   end
 
@@ -317,7 +317,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  all above are available in a create and change table blocks: 
+  all above are available in a create and change table blocks:
 
   ```ruby
   def change
@@ -348,7 +348,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
     create_table :table_name do |t|
       t.string :neither_str_nor_str_1, exclusion: ['str', 'str1']
       t.string :from_str_to_str_1, exclusion: 'str'..'str1'
-      t.string :str_or_str_1_in_trigger, exclusion: { in: ['str', 'str1'], 
+      t.string :str_or_str_1_in_trigger, exclusion: { in: ['str', 'str1'],
                                                       as: :trigger}
     end
   end
@@ -367,7 +367,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
 ### presence
 
-  Examples: 
+  Examples:
 
   ```ruby
   def up
@@ -379,11 +379,11 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  with failure message: 
+  with failure message:
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
+    validates :table_name, :column_name,
                     presence: { message: 'value should not be empty' }
   end
 
@@ -392,13 +392,13 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  check when record is inserted only: 
+  check when record is inserted only:
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
-                    presence: { message: 'value should not be empty', 
-                                as: :trigger, 
+    validates :table_name, :column_name,
+                    presence: { message: 'value should not be empty',
+                                as: :trigger,
                                 on: :create }
   end
 
@@ -407,7 +407,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  all above are available in a create and change table blocks: 
+  all above are available in a create and change table blocks:
 
   ```ruby
   def change
@@ -454,7 +454,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
 ### absence
 
-  Examples: 
+  Examples:
 
   ```ruby
   def up
@@ -466,11 +466,11 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  with failure message: 
+  with failure message:
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
+    validates :table_name, :column_name,
                     absence: { message: 'value should be empty' }
   end
 
@@ -479,13 +479,13 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  check when record is inserted only: 
+  check when record is inserted only:
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
-                    absence: { message: 'value should be empty', 
-                                as: :trigger, 
+    validates :table_name, :column_name,
+                    absence: { message: 'value should be empty',
+                                as: :trigger,
                                 on: :create }
   end
 
@@ -494,7 +494,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  all above are available in a create and change table blocks: 
+  all above are available in a create and change table blocks:
 
   ```ruby
   def change
@@ -542,9 +542,9 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
 ### format
 
-  Examples: 
+  Examples:
 
-  allows only values that contains 'word' inside: 
+  allows only values that contains 'word' inside:
 
   ```ruby
   def up
@@ -556,12 +556,12 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  with failure message: 
+  with failure message:
 
   ```ruby
   def up
-  validates :table_name, :column_name, 
-    format: { with: /word/, 
+  validates :table_name, :column_name,
+    format: { with: /word/,
               message: 'Column_name value should contain start word' }
   end
 
@@ -574,9 +574,9 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
-      format: { with: /word/, 
-                message: 'Column_name value should contain start word', 
+    validates :table_name, :column_name,
+      format: { with: /word/,
+                message: 'Column_name value should contain start word',
                 as: :trigger }
   end
 
@@ -585,7 +585,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  all above are available in a create and change table blocks: 
+  all above are available in a create and change table blocks:
 
   ```ruby
   def change
@@ -614,8 +614,8 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   ```ruby
   def change
     create_table :table_name do |t|
-      t.string :contains_word, format: /word/ 
-      t.string :contains_word_in_trigger, format: { with: /word/, 
+      t.string :contains_word, format: /word/
+      t.string :contains_word_in_trigger, format: { with: /word/,
                                                     as: :trigger }
     end
   end
@@ -632,17 +632,17 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   * `allow_blank` - ignore validation for blank values. Default value: `false`
   * `as` - defines the way how constraint will be implemented. Possible values: `[:trigger]` Default value: `:trigger`
 
-### custom 
+### custom
 
   (version >= 2.1 is required)
 
-  Examples: 
+  Examples:
 
-  allows only values that equals 'word' when trimmed: 
+  allows only values that equals 'word' when trimmed:
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
+    validates :table_name, :column_name,
                           custom: { statement: "TRIM({column_name}) = 'word'" }
   end
 
@@ -651,12 +651,12 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  with failure message: 
+  with failure message:
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
-      custom: { statement: "TRIM({column_name}) = 'word'", 
+    validates :table_name, :column_name,
+      custom: { statement: "TRIM({column_name}) = 'word'",
                 message: 'Column_name value should contain start word' }
   end
 
@@ -669,10 +669,10 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
   ```ruby
   def up
-    validates :table_name, :column_name, 
-      custom: { statement: "TRIM({column_name}) = 'word'", 
-                message: 'Column_name value should contain start word', 
-                as: :trigger, 
+    validates :table_name, :column_name,
+      custom: { statement: "TRIM({column_name}) = 'word'",
+                message: 'Column_name value should contain start word',
+                as: :trigger,
                 on: :create }
   end
 
@@ -681,12 +681,12 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   end
   ```
 
-  all above are available in a create and change table blocks: 
+  all above are available in a create and change table blocks:
 
   ```ruby
   def change
     create_table :table_name do |t|
-      t.string :column_name, 
+      t.string :column_name,
             validates: { custom: { statement: "TRIM({column_name}) = 'word'"} }
     end
   end
@@ -695,7 +695,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   ```ruby
   def up
     change :table_name do |t|
-      t.change :column_name, :string, 
+      t.change :column_name, :string,
             validates: { custom: { statement: "TRIM({column_name}) = 'word'"} }
     end
   end
@@ -713,14 +713,14 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   def change
     create_table :table_name do |t|
       t.string :contains_word, custom: "TRIM({contains_word}) = 'word'"
-      t.string :contains_word_synonym, 
+      t.string :contains_word_synonym,
                validates: "TRIM({contains_word_synonym}) = 'word'"
-      t.string :contains_word_in_trigger, 
+      t.string :contains_word_in_trigger,
                custom: { statement: "TRIM({contains_word_in_trigger}) = 'word'",          as: :trigger }
     end
   end
   ```
-  
+
   Options:
 
   * `:message` - message that should be shown if validation failed
@@ -730,7 +730,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
   * `:allow_nil` - ignore validation for nil values. Default value: false
   * `:allow_blank` - ignore validation for blank values. Default value: `false`
   * `:as` - defines the way how constraint will be implemented. Possible values: `[:trigger]`
-  
+
 ## Version History
 
 **(2.0.0)** (17 Jan, 2015)
@@ -739,7 +739,7 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
 **(2.1.0)** (22 Jan, 2015)
 
-* Custom validation 
+* Custom validation
 
 **(2.2.0)** (28 Jan, 2015)
 
@@ -752,6 +752,10 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 **(2.2.2)** (29 May, 2015)
 
 * Made it possible to use several mv-* drivers in the same project
+
+**(2.2.3)** (20 Jul, 2015)
+
+* Fix issue with invalid parameters number in `add_column` and `change_column` methods
 
 ## Contributing
 
