@@ -17,7 +17,7 @@ describe Mv::Mysql::Validation::Builder::Trigger::Format do
 
       it { is_expected.to eq([{
         statement: "NEW.column_name IS NOT NULL AND NEW.column_name RLIKE 'exp'",
-        message: 'ColumnName is not valid'
+        message: 'column_name is not valid'
       }]) }
     end
   end

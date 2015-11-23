@@ -28,7 +28,7 @@ describe Mv::Mysql::Validation::Builder::Format do
 
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL AND column_name RLIKE 'exp'",
-        message: 'ColumnName is not valid'
+        message: 'column_name is not valid'
       }]) }
     end
 
@@ -37,7 +37,7 @@ describe Mv::Mysql::Validation::Builder::Format do
 
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL AND column_name RLIKE 'exp'",
-        message: 'ColumnName is not valid'
+        message: 'column_name is not valid'
       }]) }
     end
 
@@ -54,7 +54,7 @@ describe Mv::Mysql::Validation::Builder::Format do
 
       it { is_expected.to eq([{
         statement: "column_name RLIKE 'exp' OR column_name IS NULL",
-        message: 'ColumnName is not valid'
+        message: 'column_name is not valid'
       }]) }
     end
 
@@ -63,7 +63,7 @@ describe Mv::Mysql::Validation::Builder::Format do
 
       it { is_expected.to eq([{
         statement: "column_name RLIKE 'exp' OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0",
-        message: 'ColumnName is not valid'
+        message: 'column_name is not valid'
       }]) }
     end
 
@@ -72,7 +72,7 @@ describe Mv::Mysql::Validation::Builder::Format do
 
       it { is_expected.to eq([{
         statement: "column_name RLIKE 'exp' OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0",
-        message: 'ColumnName is not valid'
+        message: 'column_name is not valid'
       }]) }
     end
   end

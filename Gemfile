@@ -2,7 +2,8 @@ source "http://rubygems.org"
 
 gem 'railties', '~> 4.1'
 gem 'mysql2', '~> 0.3'
-gem "mv-core", '~> 2.2.1'
+# gem "mv-core", '~> 2.2.1'
+gem "mv-core", path: '../mv-core'
 
 
 group :development do
