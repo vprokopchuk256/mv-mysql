@@ -25,7 +25,7 @@ module Mv
 
 
           def drop_trigger_statement table_name
-            "DROP TRIGGER IF EXISTS #{name};" 
+            "DROP TRIGGER IF EXISTS #{name};"
           end
 
           def create_trigger_statement table_name
@@ -40,9 +40,15 @@ module Mv
           def trigger_body(table_name)
             validation_builders.select{|b| b.table_name == table_name }.collect(&:conditions).flatten.collect do |condition|
               "IF NOT(#{condition[:statement]}) THEN
-                SET var = (SELECT MAX(1) FROM `#{condition[:message]}`); 
+                #{raise_error_statement(condition[:message])}
               END IF".squish
             end.join("; \n")
+          end
+
+          def raise_error_statement message
+            return "SIGNAL SQLSTATE '45000' SET message_text = '#{message}';" if db.support_signal?
+
+            "SET var = (SELECT MAX(1) FROM `#{message}`);"
           end
         end
       end

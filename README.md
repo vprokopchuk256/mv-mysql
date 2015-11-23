@@ -757,6 +757,11 @@ Define validations directly in DB as MySQL constraints and integrate them into y
 
 * Fix issue with invalid parameters number in `add_column` and `change_column` methods
 
+**(2.2.4)** (23 Nov, 2015)
+
+* Do not camel case column name in error message
+* Use SIGNAL to raise validation exception for MySQL >= 5.5
+
 ## Contributing
 
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
