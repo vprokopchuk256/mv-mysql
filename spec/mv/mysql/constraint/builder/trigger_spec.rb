@@ -7,7 +7,7 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
     Mv::Core::Db::MigrationValidator.delete_all
 
-    ::ActiveRecord::Base.connection.drop_table(:table_name) if ::ActiveRecord::Base.connection.table_exists?(:table_name)
+    ::ActiveRecord::Base.connection.drop_table(:table_name) if ::ActiveRecord::Base.connection.data_source_exists?(:table_name)
     ::ActiveRecord::Base.connection.create_table(:table_name) do |t|
       t.integer :column_name
     end
@@ -27,11 +27,11 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when exlusion validation provided" do
       let(:validation) {
-        Mv::Mysql::Validation::Exclusion.new(:table_name, 
-                                                 :column_name, 
+        Mv::Mysql::Validation::Exclusion.new(:table_name,
+                                                 :column_name,
                                                  in: [1, 3],
-                                                 as: :trigger, 
-                                                 update_trigger_name: :trg_mv_table_name) 
+                                                 as: :trigger,
+                                                 update_trigger_name: :trg_mv_table_name)
       }
 
       its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Exclusion) }
@@ -39,11 +39,11 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when inclusion validation provided" do
       let(:validation) {
-        Mv::Mysql::Validation::Inclusion.new(:table_name, 
-                                                 :column_name, 
+        Mv::Mysql::Validation::Inclusion.new(:table_name,
+                                                 :column_name,
                                                  in: [1, 3],
-                                                 as: :trigger, 
-                                                 update_trigger_name: :trg_mv_table_name) 
+                                                 as: :trigger,
+                                                 update_trigger_name: :trg_mv_table_name)
       }
 
       its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Inclusion) }
@@ -51,11 +51,11 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when length validation provided" do
       let(:validation) {
-        Mv::Mysql::Validation::Length.new(:table_name, 
-                                                 :column_name, 
+        Mv::Mysql::Validation::Length.new(:table_name,
+                                                 :column_name,
                                                  in: [1, 3],
-                                                 as: :trigger, 
-                                                 update_trigger_name: :trg_mv_table_name) 
+                                                 as: :trigger,
+                                                 update_trigger_name: :trg_mv_table_name)
       }
 
       its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Length) }
@@ -63,10 +63,10 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when presence validation provided" do
       let(:validation) {
-        Mv::Mysql::Validation::Presence.new(:table_name, 
-                                                 :column_name, 
-                                                 as: :trigger, 
-                                                 update_trigger_name: :trg_mv_table_name) 
+        Mv::Mysql::Validation::Presence.new(:table_name,
+                                                 :column_name,
+                                                 as: :trigger,
+                                                 update_trigger_name: :trg_mv_table_name)
       }
 
       its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Presence) }
@@ -74,10 +74,10 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when absence validation provided" do
       let(:validation) {
-        Mv::Mysql::Validation::Absence.new(:table_name, 
-                                         :column_name, 
-                                         as: :trigger, 
-                                         update_trigger_name: :trg_mv_table_name) 
+        Mv::Mysql::Validation::Absence.new(:table_name,
+                                         :column_name,
+                                         as: :trigger,
+                                         update_trigger_name: :trg_mv_table_name)
       }
 
       its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Absence) }
@@ -85,10 +85,10 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when custom validation provided" do
       let(:validation) {
-        Mv::Mysql::Validation::Custom.new(:table_name, 
-                                         :column_name, 
-                                         as: :trigger, 
-                                         update_trigger_name: :trg_mv_table_name) 
+        Mv::Mysql::Validation::Custom.new(:table_name,
+                                         :column_name,
+                                         as: :trigger,
+                                         update_trigger_name: :trg_mv_table_name)
       }
 
       its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Custom) }
@@ -96,10 +96,10 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     describe "when uniqueness validation provided" do
       let(:validation) {
-        Mv::Mysql::Validation::Uniqueness.new(:table_name, 
-                                             :column_name, 
-                                             as: :trigger, 
-                                             update_trigger_name: :trg_mv_table_name) 
+        Mv::Mysql::Validation::Uniqueness.new(:table_name,
+                                             :column_name,
+                                             as: :trigger,
+                                             update_trigger_name: :trg_mv_table_name)
       }
 
       its(:first) { is_expected.to be_a_kind_of(Mv::Mysql::Validation::Builder::Trigger::Uniqueness) }
@@ -117,8 +117,8 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     def triggers name
       ActiveRecord::Base.connection.select_values("
-        SELECT trigger_name 
-          FROM information_schema.triggers 
+        SELECT trigger_name
+          FROM information_schema.triggers
          WHERE trigger_schema='#{ActiveRecord::Base.connection.current_database}'
            AND trigger_name = '#{name}'
       ")
@@ -126,24 +126,24 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
 
     before do
       Mv::Mysql::Constraint::Builder::Trigger.validation_builders_factory.register_builder(
-        Mv::Core::Validation::Presence, 
+        Mv::Core::Validation::Presence,
         test_validation_builder_klass
       )
     end
 
     after do
       Mv::Mysql::Constraint::Builder::Trigger.validation_builders_factory.register_builder(
-        Mv::Core::Validation::Presence, 
+        Mv::Core::Validation::Presence,
         Mv::Mysql::Validation::Builder::Trigger::Presence
       )
     end
 
     let(:validation) {
-      Mv::Core::Validation::Presence.new(:table_name, 
-                                        :column_name, 
-                                         as: :trigger, 
-                                         update_trigger_name: :trg_mv_table_name_upd, 
-                                         create_trigger_name: :trg_mv_table_name_ins) 
+      Mv::Core::Validation::Presence.new(:table_name,
+                                        :column_name,
+                                         as: :trigger,
+                                         update_trigger_name: :trg_mv_table_name_upd,
+                                         create_trigger_name: :trg_mv_table_name_ins)
     }
 
 
@@ -192,14 +192,14 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
       subject { create_trigger_builder.update(create_trigger_builder) }
 
       describe "when trigger exists" do
-        before do 
+        before do
           ActiveRecord::Base.connection.execute(
             "CREATE TRIGGER trg_mv_table_name_ins BEFORE INSERT ON table_name FOR EACH ROW
             BEGIN
               DECLARE var INT;
 
               IF NOT(1 = 1) THEN
-                SET var = (SELECT MAX(1) FROM `some error message`); 
+                SET var = (SELECT MAX(1) FROM `some error message`);
               END IF;
             END;"
           )
@@ -221,14 +221,14 @@ describe Mv::Mysql::Constraint::Builder::Trigger do
       subject { create_trigger_builder.delete }
 
       describe "when trigger exists" do
-        before do 
+        before do
           ActiveRecord::Base.connection.execute(
             "CREATE TRIGGER trg_mv_table_name_ins BEFORE INSERT ON table_name FOR EACH ROW
             BEGIN
               DECLARE var INT;
 
               IF NOT(1 = 1) THEN
-                SET var = (SELECT MAX(1) FROM `some error message`); 
+                SET var = (SELECT MAX(1) FROM `some error message`);
               END IF;
             END;"
           )
